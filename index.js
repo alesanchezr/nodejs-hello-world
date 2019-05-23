@@ -1,13 +1,21 @@
-var http = require('http');
+var express = require('express');
+const fetch = require('node-fetch');
+var app = express();
 
-var server = http.createServer(function(request, response) {
-
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.end("Hello World!");
-
+app.get('/', function(req, res){
+  res.send('Go to /test to start the test');
 });
 
-var port = 80;
-server.listen(port);
+app.get('/test', function(req, res){
 
-console.log("Server running at http://localhost:%d", port);
+    //here I'm trying to GET /data and decode the result, but i get a timout
+  fetch('/data')
+    .then(resp => resp.json())
+    .then(data => res.send("Got the following: ", JSON.stringify(data)));
+});
+
+app.get('/data', function(req, res){
+  res.json({ some: 'data'});
+});
+
+app.listen(8080);
